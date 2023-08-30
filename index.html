@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SENZLI-WebUI</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+  </head>
+  <body>
+    <div class="main">
+      <div id="clock"><span class="ejaculation-count">0</span><span class="nowtime"></span><span class="ejaculation"></span></div>
+      <ul class="menu">
+        <li><a onclick="toggleDarkMode();">dark</a></li>
+        <li><a onclick="toggleOnlyMode('Image');">IMG_only</a></li>
+        <li><a onclick="toggleOnlyMode('video');">video_only</a></li>
+      </ul>
+      <div id="canvas">
+        <img id="image_place">
+        <video id="video_place" autoplay muted controls></video>
+      </div>
+    </div>
+    <div class="remove-btn">
+      <button style="bottom:110px;" onclick="menu_toggle();">Menu</button>
+      <button onclick="footer_remove();">hidden</button>
+    </div>
+    <div class="background">
+      <div class="side">
+        <div class="left-side">
+          <button onclick="changeMedia('L', 'image');">back image</button>
+          <button onclick="changeMedia('R', 'image');">next image</button>
+          <textarea class="image_input" cols="18" rows="2"></textarea>
+        </div>
+        <div class="right-side">
+          <button onclick="changeMedia('L', 'video');">back video</button>
+          <button onclick="changeMedia('R', 'video');">next video</button>
+          <textarea class="video_input" cols="18" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="bottom">
+        <input max="10" min="0.2" type="range" id="range" value="10" step="0.1">
+        <br>
+        <button onclick="togglePlayPause()">Play</button>
+        <button onclick="togglePictureInPicture()">PIP</button>
+        <button onclick="ejacu_count();">Ejaculation</button>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
