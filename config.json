@@ -1,0 +1,8 @@
+{
+  "dirConditions": {
+    "samedirectory": true
+  },
+  "Access": {
+    "local": true
+  }
+}
