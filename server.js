@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -11,8 +11,11 @@ const exclusion = ENV.EXCLUSION
 const video = `/${ENV.VIDEO}`;
 const Image = `/${ENV.IMAGE}`;
 let count = 0;
-let dir;
 let IPAddress;
+let dir;
+
+const videoExtensions = ['.mp4','.mov','.MP4','.MOV']
+const imageExtensions = ['.png','.jpg','.jpeg','.webp','.gif','.PNG','.JPG','.JPEG','.WEBP','.GIF'];
 
 if (config.Access.local) {
   IPAddress = '127.0.0.1'
@@ -47,27 +50,32 @@ function getFiles(folderPath, extensionFilter, resultArray, genre) {
 function print(Type, list) {
   list.forEach(item => console.log(`[${Type}] ${item}`));
 }
-function AccessCount() {
-  count++;
-  console.log(count)
+function AccessCount(IP, Agent) {
+  count ++;
+  const result = {
+    UserAgent: Agent,
+    IPAddress: IP,
+    Total_Access: count,
+  };
+  return result;
 }
-
 app.get(Image, (req, res) => {
   const list_Image = [];
-  getFiles(path.join(dir, Image), ['.png','.jpg','.jpeg','.webp','.gif','.PNG','.JPG','.JPEG','.WEBP','.GIF'], list_Image);
+  getFiles(path.join(dir,Image),imageExtensions,list_Image);
   res.json(list_Image);
-  print("Image",list_Image);
+  print('Image',list_Image);
 });
 app.get(video, (req, res) => {
   const list_video = [];
-  getFiles(path.join(dir, video),['.mp4','.mov','.MP4','.MOV'],　list_video);
+  getFiles(path.join(dir,video),videoExtensions,list_video);
   res.json(list_video);
-  print("video",list_video);
-  AccessCount();
+  print('video',list_video);
+  const accessInfo = AccessCount(req.ip, req.get('User-Agent'));
+  console.log(accessInfo);
 });
-app.get("/password",(req,res) => {
+app.get('/password',(req,res) => {
   const password = ENV.password;
-  res.json(password)
+  res.json(password);
 })
 
 app.use(express.static(path.join(__dirname, '')));
