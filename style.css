@@ -201,7 +201,7 @@ li a {
   padding: 1px 5px;
   position: fixed;
   right: 5px;
-  bottom: 85px;
+  bottom: 145px;
   z-index: 12;
 }
 .remove {
@@ -247,6 +247,9 @@ li a {
     padding-bottom: 4px;
     font-size: 10px;
   }
+  .background .side {
+    top: -60px;
+  }
   .background .side textarea {
     display: contents;
   }
@@ -260,7 +263,7 @@ li a {
   }
   #canvas img {
     width: auto;
-    height: 50vh;
+    max-height: 50vh;
     max-width: 100%;
     z-index: 0;
     margin: 0 auto;
