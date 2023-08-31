@@ -65,6 +65,10 @@ app.get(video, (req, res) => {
   print("video",list_video);
   AccessCount();
 });
+app.get("/password",(req,res) => {
+  const password = ENV.password;
+  res.json(password)
+})
 
 app.use(express.static(path.join(__dirname, '')));
 app.listen(port, IPAddress, () => {
