@@ -207,6 +207,27 @@ li a {
 .remove {
   background-color: transparent;
 }
+.password-container {
+  width: 100%;
+  height: 100%;
+  background: #1d1d1d;
+  position: relative;
+  z-index: 10000;
+}
+#password-area {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  position: fixed;
+}
+#password-area #password-input {
+  border: unset;
+  padding: 6px 10px;
+}
+#password-area #submit-button {
+  border: unset;
+  padding: 6px 10px;
+}
 @media screen and (max-width:600px) {
   .background .bottom {
     top: -55px;
@@ -231,8 +252,9 @@ li a {
   }
   #canvas video {
     width: auto;
-    height: 30vh;
+    height: auto;
     max-width: 85%;
+    max-height: 30vh;
     margin: 0 auto;
     position: unset;
   }
