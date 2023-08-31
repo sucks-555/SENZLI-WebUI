@@ -106,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const enteredPassword = document.getElementById("password-input").value;
     const response = await fetch(`${hostURL}password`);
     const data = await response.json();
-    console.log(data,enteredPassword)
     if (enteredPassword === data) {
       passwordcontainer.classList.toggle('display_none')
     } else {
