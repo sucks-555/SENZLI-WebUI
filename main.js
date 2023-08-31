@@ -56,32 +56,6 @@ function speed(b) {
   }, b * 1000);
 }
 
-function ejacu_count() {
-  ejaculation_count ++;
-  document.querySelector('.ejaculation-count').textContent = `${ejaculation_count}`;
-  ejaculation();
-}
-
-function ejaculation() {
-  let till_str;
-  let date_now = Date.now();
-  let now = new Date();
-  let date_now_str = `[${now.getHours()}時${now.getMinutes()}分${now.getSeconds()}秒]`;
-  result = Math.ceil((date_now - start.time) / 1000);
-  if (Math.ceil(result / 60) > 60) {
-    till_str = `${Math.ceil(result / 60)}時間${Math.ceil(result) % 60}分`;
-  } else if (result > 60) {
-    till_str = `${Math.ceil(result / 60)}分${Math.ceil(result) % 60}秒`;
-  } else {
-    till_str = `${result}秒`;
-  }
-  const ejacu_str = `${date_now_str} [TILL ${till_str}]`;
-  document.querySelector(".ejaculation").textContent = ejacu_str;
-  document.querySelector('.nowtime').textContent = `${date}`;
-  start.time = date_now;
-  date = date_now_str;
-}
-
 function fetchMedia(type, folder, list, element) {
   return fetch(`${hostURL}/${type}`)
     .then(response => response.json())
@@ -93,12 +67,10 @@ function fetchMedia(type, folder, list, element) {
       return max;
     });
 }
-
 async function initialize() {
   lengthIMAGE = await fetchMedia(MEDIA_TYPES.IMAGE, FOLDER_PATHS.IMAGE, IMAGEList, IMAGEPlayer);
   lengthVIDEO = await fetchMedia(MEDIA_TYPES.VIDEO, FOLDER_PATHS.VIDEO, VIDEOList, VIDEOPlayer);
 }
-initialize();
 
 document.addEventListener("DOMContentLoaded", function () {
   const submitButton = document.getElementById("submit-button");
@@ -108,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const data = await response.json();
     if (enteredPassword === data) {
       passwordcontainer.classList.toggle('display_none')
+      initialize();
     } else {
       miss_count++;
       if (miss_count > 9) {
@@ -141,7 +114,30 @@ function handleVideoInput(v) {
   const key = v.key;
   changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.VIDEO);
 }
-
+function ejacu_count() {
+  ejaculation_count ++;
+  document.querySelector('.ejaculation-count').textContent = `${ejaculation_count}`;
+  ejaculation();
+}
+function ejaculation() {
+  let till_str;
+  let date_now = Date.now();
+  let now = new Date();
+  let date_now_str = `[${now.getHours()}時${now.getMinutes()}分${now.getSeconds()}秒]`;
+  result = Math.ceil((date_now - start.time) / 1000);
+  if (Math.ceil(result / 60) > 60) {
+    till_str = `${Math.ceil(result / 60)}時間${Math.ceil(result) % 60}分`;
+  } else if (result > 60) {
+    till_str = `${Math.ceil(result / 60)}分${Math.ceil(result) % 60}秒`;
+  } else {
+    till_str = `${result}秒`;
+  }
+  const ejacu_str = `${date_now_str} [TILL ${till_str}]`;
+  document.querySelector(".ejaculation").textContent = ejacu_str;
+  document.querySelector('.nowtime').textContent = `${date}`;
+  start.time = date_now;
+  date = date_now_str;
+}
 InputIMAGE.addEventListener('keydown', handleImageInput);
 InputVIDEO.addEventListener('keydown', handleVideoInput);
 
@@ -152,19 +148,16 @@ VIDEOPlayer.addEventListener('ended', () => {
   }
   VIDEOPlayer.src = `${hostURL}${FOLDER_PATHS.VIDEO}/${VIDEOList[CountVIDEO]}`;
 });
-
 function playVideo() {
   if (VIDEOPlayer.paused) {
     VIDEOPlayer.play();
   }
 }
-
 function pauseVideo() {
   if (!VIDEOPlayer.paused) {
     VIDEOPlayer.pause();
   }
 }
-
 function toggleOnlyMode(type) {
   if (type === 'Image') {
     img.classList.toggle('only_mode');
@@ -174,7 +167,6 @@ function toggleOnlyMode(type) {
     img.classList.toggle('display_none');
   }
 }
-
 function togglePlayPause() {
   if (VIDEOPlayer.paused) {
     playVideo();
@@ -182,7 +174,6 @@ function togglePlayPause() {
     pauseVideo();
   }
 }
-
 function togglePictureInPicture() {
   if (document.pictureInPictureElement) {
     document.exitPictureInPicture();
@@ -190,22 +181,18 @@ function togglePictureInPicture() {
     VIDEOPlayer.requestPictureInPicture();
   }
 }
-
 function toggleDarkMode() {
   body.classList.toggle('dark');
   const isDarkMode = body.classList.contains('dark');
   localStorage.setItem('darkMode', isDarkMode);
 }
-
 const savedDarkMode = localStorage.getItem('darkMode');
 if (savedDarkMode === 'true') {
   toggleDarkMode();
 }
-
 function menu_toggle() {
   menu.classList.toggle("open")
 }
-
 function footer_remove() {
   clock.classList.toggle("display_none")
   bottom.classList.toggle("transparent")
