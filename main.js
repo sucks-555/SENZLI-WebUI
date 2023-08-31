@@ -1,4 +1,3 @@
-const PORT = 3000;
 const hostURL = window.location.href
 const MEDIA_TYPES = { VIDEO: 'video', IMAGE: 'image' };
 const FOLDER_PATHS = { VIDEO: '/video', IMAGE: '/image' };
@@ -10,17 +9,19 @@ let CountIMAGE = 0;
 let CountVIDEO = 0;
 let timer,date;
 let ejaculation_count = 0;
+let miss_count = 0;
 let start = {
   time: []
 };
 
-const clock = document.getElementById("clock");
 const body = document.querySelector('.main');
 const img = document.querySelector('#image_place');
 const video = document.querySelector('#video_place');
 const background = document.querySelector(".background");
 const menu = document.querySelector(".menu")
 const bottom = document.querySelector(".bottom");
+const clock = document.getElementById("clock");
+const passwordcontainer = document.querySelector(".password-container");
 
 const VIDEOPlayer = document.getElementById('video_place');
 const IMAGEPlayer = document.getElementById('image_place');
@@ -98,6 +99,27 @@ async function initialize() {
   lengthVIDEO = await fetchMedia(MEDIA_TYPES.VIDEO, FOLDER_PATHS.VIDEO, VIDEOList, VIDEOPlayer);
 }
 initialize();
+
+document.addEventListener("DOMContentLoaded", function () {
+  const submitButton = document.getElementById("submit-button");
+  submitButton.addEventListener("click", async function () {
+    const enteredPassword = document.getElementById("password-input").value;
+    const response = await fetch(`${hostURL}password`);
+    const data = await response.json();
+    console.log(data,enteredPassword)
+    if (enteredPassword === data) {
+      passwordcontainer.classList.toggle('display_none')
+    } else {
+      miss_count++;
+      if (miss_count > 9) {
+        alert("fuck off! right now!");
+        window.location.href = "https://www.google.com/";
+      } else {
+        alert(`If you make ${10 - miss_count} more mistakes, you will not be able to use the service.`);
+      }
+    }
+  });
+});
 
 function changeMedia(direction, type) {
   if (type === MEDIA_TYPES.IMAGE) {
