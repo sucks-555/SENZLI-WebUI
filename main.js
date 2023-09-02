@@ -1,4 +1,4 @@
-const hostURL = window.location.href
+const hostURL = window.location.href;
 const MEDIA_TYPES = { VIDEO: 'video', IMAGE: 'image' };
 const FOLDER_PATHS = { VIDEO: '/video', IMAGE: '/image' };
 
@@ -21,6 +21,7 @@ const background = document.querySelector(".background");
 const menu = document.querySelector(".menu")
 const bottom = document.querySelector(".bottom");
 const clock = document.getElementById("clock");
+const range = document.getElementById("range");
 const passwordcontainer = document.querySelector(".password-container");
 
 const VIDEOPlayer = document.getElementById('video_place');
@@ -40,24 +41,24 @@ window.onload = function () {
     console.log(`speed ${input.value}`);
     speed(input.value);
   });
-}
+};
 window.onmousewheel = function(event) {
   if (event.wheelDelta > 0) {
     changeMedia("L","image");
   } else {
     changeMedia("R","image");
   }
-}
+};
 
 function speed(b) {
   clearInterval(timer);
   timer = setInterval(function () {
     changeMedia('R', MEDIA_TYPES.IMAGE);
   }, b * 1000);
-}
+};
 
 function fetchMedia(type, folder, list, element) {
-  return fetch(`${hostURL}/${type}`)
+  return fetch(`/${type}`)
     .then(response => response.json())
     .then(media => {
       list.push(...media);
@@ -66,28 +67,35 @@ function fetchMedia(type, folder, list, element) {
       element.src = `${hostURL}${folder}/${media[0]}`;
       return max;
     });
-}
+};
+
 async function initialize() {
   lengthIMAGE = await fetchMedia(MEDIA_TYPES.IMAGE, FOLDER_PATHS.IMAGE, IMAGEList, IMAGEPlayer);
   lengthVIDEO = await fetchMedia(MEDIA_TYPES.VIDEO, FOLDER_PATHS.VIDEO, VIDEOList, VIDEOPlayer);
-}
+};
+
+function process_exit() {
+  fetch('/stop', {
+    method: 'GET',
+  })
+};
 
 document.addEventListener("DOMContentLoaded", function () {
   const submitButton = document.getElementById("submit-button");
   submitButton.addEventListener("click", async function () {
     const enteredPassword = document.getElementById("password-input").value;
-    const response = await fetch(`${hostURL}password`);
+    const response = await fetch(`/password`);
     const data = await response.json();
     if (enteredPassword === data) {
       passwordcontainer.classList.toggle('display_none')
       initialize();
     } else {
       miss_count++;
-      if (miss_count > 9) {
-        alert("fuck off! right now!");
+      if (miss_count > 2) {
+        process_exit();
         window.location.href = "https://www.google.com/";
       } else {
-        alert(`If you make ${10 - miss_count} more mistakes, you will not be able to use the service.`);
+        alert(`If you make ${3 - miss_count} more mistakes, you will not be able to use the service.`);
       }
     }
   });
@@ -105,20 +113,20 @@ function changeMedia(direction, type) {
     VIDEOPlayer.src = `${hostURL}${FOLDER_PATHS.VIDEO}/${VIDEOList[CountVIDEO]}`;
     console.log(`[video][${CountVIDEO}] [${VIDEOList[CountVIDEO]}]`);
   }
-}
+};
 function handleImageInput(i) {
   const key = i.key;
   changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.IMAGE);
-}
+};
 function handleVideoInput(v) {
   const key = v.key;
   changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.VIDEO);
-}
+};
 function ejacu_count() {
   ejaculation_count ++;
   document.querySelector('.ejaculation-count').textContent = `${ejaculation_count}`;
   ejaculation();
-}
+};
 function ejaculation() {
   let till_str;
   let date_now = Date.now();
@@ -137,7 +145,7 @@ function ejaculation() {
   document.querySelector('.nowtime').textContent = `${date}`;
   start.time = date_now;
   date = date_now_str;
-}
+};
 InputIMAGE.addEventListener('keydown', handleImageInput);
 InputVIDEO.addEventListener('keydown', handleVideoInput);
 
@@ -152,12 +160,12 @@ function playVideo() {
   if (VIDEOPlayer.paused) {
     VIDEOPlayer.play();
   }
-}
+};
 function pauseVideo() {
   if (!VIDEOPlayer.paused) {
     VIDEOPlayer.pause();
   }
-}
+};
 function toggleOnlyMode(type) {
   if (type === 'Image') {
     img.classList.toggle('only_mode');
@@ -166,35 +174,36 @@ function toggleOnlyMode(type) {
     video.classList.toggle('only_mode');
     img.classList.toggle('display_none');
   }
-}
+};
 function togglePlayPause() {
   if (VIDEOPlayer.paused) {
     playVideo();
   } else {
     pauseVideo();
   }
-}
+};
 function togglePictureInPicture() {
   if (document.pictureInPictureElement) {
     document.exitPictureInPicture();
   } else {
     VIDEOPlayer.requestPictureInPicture();
   }
-}
+};
 function toggleDarkMode() {
   body.classList.toggle('dark');
   const isDarkMode = body.classList.contains('dark');
   localStorage.setItem('darkMode', isDarkMode);
-}
+};
 const savedDarkMode = localStorage.getItem('darkMode');
 if (savedDarkMode === 'true') {
   toggleDarkMode();
-}
+};
 function menu_toggle() {
-  menu.classList.toggle("open")
-}
+  menu.classList.toggle("open");
+};
 function footer_remove() {
-  clock.classList.toggle("display_none")
-  bottom.classList.toggle("transparent")
-  background.classList.toggle("remove")
-}
+  clock.classList.toggle("display_none");
+  bottom.classList.toggle("transparent");
+  background.classList.toggle("remove");
+  range.classList.toggle("display_none");
+};
