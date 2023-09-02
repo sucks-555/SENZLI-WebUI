@@ -18,9 +18,9 @@ const videoExtensions = ['.mp4','.mov','.MP4','.MOV']
 const imageExtensions = ['.png','.jpg','.jpeg','.webp','.gif','.PNG','.JPG','.JPEG','.WEBP','.GIF'];
 
 if (config.Access.local) {
-  IPAddress = '127.0.0.1'
+  IPAddress = '127.0.0.1';
 } else {
-  IPAddress = ENV.WiFi_IPAddress
+  IPAddress = ENV.WiFi_IPAddress;
 }
 if (config.dirConditions.samedirectory) {
   dir = path.join(__dirname, '..', ENV.FOLDER);
@@ -47,9 +47,6 @@ function getFiles(folderPath, extensionFilter, resultArray, genre) {
     }
   });
 };
-function print(Type, list) {
-  list.forEach(item => console.log(`[${Type}] ${item}`));
-}
 function AccessCount(IP, Agent) {
   count ++;
   const result = {
@@ -58,7 +55,10 @@ function AccessCount(IP, Agent) {
     Total_Access: count,
   };
   return result;
-}
+};
+function print(Type, list) {
+  list.forEach(item => console.log(`[${Type}] ${item}`));
+};
 app.get(Image, (req, res) => {
   const list_Image = [];
   getFiles(path.join(dir,Image),imageExtensions,list_Image);
@@ -73,11 +73,13 @@ app.get(video, (req, res) => {
   const accessInfo = AccessCount(req.ip, req.get('User-Agent'));
   console.log(accessInfo);
 });
-app.get('/password',(req,res) => {
+app.get('/password', (req, res) => {
   const password = ENV.password;
   res.json(password);
-})
-
+});
+app.get('/stop', (req, res) => {
+  process.exit();
+});
 app.use(express.static(path.join(__dirname, '')));
 app.listen(port, IPAddress, () => {
   console.log(`Server listening on port ${port}\nhttp://${IPAddress}:${port}`);
