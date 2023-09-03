@@ -203,7 +203,7 @@ function menu_toggle() {
 };
 function footer_remove() {
   clock.classList.toggle("display_none");
-  bottom.classList.toggle("transparent");
+  bottom.classList.toggle("display_none");
   background.classList.toggle("remove");
   range.classList.toggle("display_none");
 };
