@@ -52,14 +52,14 @@ function speed(b) {
   }, b * 1000);
 };
 
-function fetchMedia(type, list, element) {
-  return fetch(`/${type}`)
+function fetchMedia(folder, list, element) {
+  return fetch(`/${folder}`)
     .then(response => response.json())
     .then(media => {
       list.push(...media);
       const max = media.length;
-      console.log(`[Media] Type='${type}',length='${max}'`, list);
-      element.src = `${hostURL}/${type}/${media[0]}`;
+      console.log(`[Media] Type='${media}',length='${max}'`, list);
+      element.src = `${hostURL}/${folder}/${list[0]}`;
       return max;
     });
 };
@@ -100,8 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function changeMedia(direction, type) {
-  if (type === MEDIA_TYPES.IMAGE) {
+function changeMedia(direction, media) {
+  if (media === MEDIA_TYPES.IMAGE) {
     const length_image = IMAGEList.length;
     count_image = direction === 'L' ? (count_image === 0 ? length_image - 1 : (count_image - 1) % length_image) : (count_image + 1) % length_image;
     IMAGEPlayer.src = `${hostURL}/${MEDIA_TYPES.IMAGE}/${IMAGEList[count_image]}`;
@@ -161,8 +161,8 @@ function pauseVideo() {
     VIDEOPlayer.pause();
   }
 };
-function toggleOnlyMode(type) {
-  if (type === 'Image') {
+function toggleOnlyMode(media) {
+  if (media === 'Image') {
     img.classList.toggle('only_mode');
     video.classList.toggle('display_none');
   } else {
