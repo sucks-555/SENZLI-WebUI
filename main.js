@@ -1,15 +1,11 @@
 const hostURL = window.location.href;
-const MEDIA_TYPES = { VIDEO: 'video', IMAGE: 'image' };
-const FOLDER_PATHS = { VIDEO: '/video', IMAGE: '/image' };
-
-let lengthIMAGE,lengthVIDEO;
+let path_json,get_path,MEDIA_TYPES;
 let IMAGEList = [];
 let VIDEOList = [];
-let CountIMAGE = 0;
-let CountVIDEO = 0;
+let count_image = 0;
+let count_video = 0;
 let timer,date;
 let ejaculation_count = 0;
-let miss_count = 0;
 let start = {
   time: []
 };
@@ -43,9 +39,9 @@ window.onload = function () {
 };
 window.onmousewheel = function(event) {
   if (event.wheelDelta > 0) {
-    changeMedia("L","image");
+    changeMedia("L",MEDIA_TYPES.IMAGE);
   } else {
-    changeMedia("R","image");
+    changeMedia("R",MEDIA_TYPES.IMAGE);
   }
 };
 
@@ -56,21 +52,21 @@ function speed(b) {
   }, b * 1000);
 };
 
-function fetchMedia(type, folder, list, element) {
+function fetchMedia(type, list, element) {
   return fetch(`/${type}`)
     .then(response => response.json())
     .then(media => {
       list.push(...media);
       const max = media.length;
       console.log(`[Media] Type='${type}',length='${max}'`, list);
-      element.src = `${hostURL}${folder}/${media[0]}`;
+      element.src = `${hostURL}/${type}/${media[0]}`;
       return max;
     });
 };
 
 async function initialize() {
-  lengthIMAGE = await fetchMedia(MEDIA_TYPES.IMAGE, FOLDER_PATHS.IMAGE, IMAGEList, IMAGEPlayer);
-  lengthVIDEO = await fetchMedia(MEDIA_TYPES.VIDEO, FOLDER_PATHS.VIDEO, VIDEOList, VIDEOPlayer);
+  await fetchMedia(MEDIA_TYPES.IMAGE, IMAGEList, IMAGEPlayer);
+  await fetchMedia(MEDIA_TYPES.VIDEO, VIDEOList, VIDEOPlayer);
 };
 
 function process_exit() {
@@ -80,6 +76,7 @@ function process_exit() {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  let miss_count = 0;
   const submitButton = document.getElementById("submit-button");
   submitButton.addEventListener("click", async function () {
     const enteredPassword = document.getElementById("password-input").value;
@@ -87,6 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const data = await response.json();
     if (enteredPassword === data) {
       passwordcontainer.classList.toggle('display_none')
+      get_path = await fetch(`/path`);
+      path_json = await get_path.json();
+      MEDIA_TYPES = { VIDEO: path_json.video, IMAGE: path_json.image };
       initialize();
     } else {
       miss_count++;
@@ -102,15 +102,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function changeMedia(direction, type) {
   if (type === MEDIA_TYPES.IMAGE) {
-    const ImageLength = IMAGEList.length;
-    CountIMAGE = direction === 'L' ? (CountIMAGE === 0 ? ImageLength - 1 : (CountIMAGE - 1) % ImageLength) : (CountIMAGE + 1) % ImageLength;
-    IMAGEPlayer.src = `${hostURL}${FOLDER_PATHS.IMAGE}/${IMAGEList[CountIMAGE]}`;
-    console.log(`[Image][${CountIMAGE}] [${IMAGEList[CountIMAGE]}]`);
+    const length_image = IMAGEList.length;
+    count_image = direction === 'L' ? (count_image === 0 ? length_image - 1 : (count_image - 1) % length_image) : (count_image + 1) % length_image;
+    IMAGEPlayer.src = `${hostURL}/${MEDIA_TYPES.IMAGE}/${IMAGEList[count_image]}`;
+    console.log(`[Image][${count_image}] [${IMAGEList[count_image]}]`);
   } else {
-    const videoLength = VIDEOList.length;
-    CountVIDEO = direction === 'L' ? (CountVIDEO === 0 ? videoLength - 1 : (CountVIDEO - 1) % videoLength) : (CountVIDEO + 1) % videoLength;
-    VIDEOPlayer.src = `${hostURL}${FOLDER_PATHS.VIDEO}/${VIDEOList[CountVIDEO]}`;
-    console.log(`[video][${CountVIDEO}] [${VIDEOList[CountVIDEO]}]`);
+    const length_video = VIDEOList.length;
+    count_video = direction === 'L' ? (count_video === 0 ? length_video - 1 : (count_video - 1) % length_video) : (count_video + 1) % length_video;
+    VIDEOPlayer.src = `${hostURL}/${MEDIA_TYPES.VIDEO}/${VIDEOList[count_video]}`;
+    console.log(`[video][${count_video}] [${VIDEOList[count_video]}]`);
   }
 };
 function handleImageInput(i) {
@@ -145,11 +145,11 @@ InputIMAGE.addEventListener('keydown', handleImageInput);
 InputVIDEO.addEventListener('keydown', handleVideoInput);
 
 VIDEOPlayer.addEventListener('ended', () => {
-  CountVIDEO++;
-  if (CountVIDEO >= VIDEOList.length) {
-    CountVIDEO = 0;
+  count_video++;
+  if (count_video >= VIDEOList.length) {
+    count_video = 0;
   }
-  VIDEOPlayer.src = `${hostURL}${FOLDER_PATHS.VIDEO}/${VIDEOList[CountVIDEO]}`;
+  VIDEOPlayer.src = `${hostURL}/${MEDIA_TYPES.VIDEO}/${VIDEOList[count_video]}`;
 });
 function playVideo() {
   if (VIDEOPlayer.paused) {
