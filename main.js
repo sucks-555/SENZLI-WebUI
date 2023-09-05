@@ -19,7 +19,6 @@ const img = document.querySelector('#image_place');
 const video = document.querySelector('#video_place');
 const background = document.querySelector(".background");
 const menu = document.querySelector(".menu")
-const bottom = document.querySelector(".bottom");
 const clock = document.getElementById("clock");
 const range = document.getElementById("range");
 const passwordcontainer = document.querySelector(".password-container");
@@ -199,7 +198,6 @@ function menu_toggle() {
 };
 function footer_remove() {
   clock.classList.toggle("display_none");
-  bottom.classList.toggle("display_none");
   background.classList.toggle("remove");
   range.classList.toggle("display_none");
 };
