@@ -128,18 +128,14 @@ function ejacu_count() {
   ejaculation();
 };
 function ejaculation() {
-  let till_str;
-  let date_now = Date.now();
   let now = new Date();
+  let date_now = Date.now();
   let date_now_str = `[${now.getHours()}時${now.getMinutes()}分${now.getSeconds()}秒]`;
-  result = Math.ceil((date_now - start.time) / 1000);
-  if (Math.ceil(result / 60) > 60) {
-    till_str = `${Math.ceil(result / 60)}時間${Math.ceil(result) % 60}分`;
-  } else if (result > 60) {
-    till_str = `${Math.ceil(result / 60)}分${Math.ceil(result) % 60}秒`;
-  } else {
-    till_str = `${result}秒`;
-  }
+  let result = Math.ceil((date_now - start.time) / 1000);
+  let hours = Math.floor(result / 3600);
+  let minutes = Math.floor((result % 3600) / 60);
+  let seconds = result % 60;
+  let till_str = `${hours}時間${minutes}分${seconds}秒`; // 時間、分、秒を表示する形式に変更
   const ejacu_str = `${date_now_str} [TILL ${till_str}]`;
   document.querySelector(".ejaculation").textContent = ejacu_str;
   document.querySelector('.nowtime').textContent = `${date}`;
