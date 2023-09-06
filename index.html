@@ -21,11 +21,13 @@
         <li><a onclick="toggleDarkMode();">dark</a></li>
         <li><a onclick="toggleOnlyMode('Image');">IMG_only</a></li>
         <li><a onclick="toggleOnlyMode('video');">video_only</a></li>
+        <li><a onclick="media_splice('img');">splice(img)</a></li>
+        <li><a onclick="media_splice('video');">splice(video)</a></li>
         <li><a onclick="process_exit();">process exit</a></li>
       </ul>
       <div id="canvas">
-        <img id="image_place">
         <video id="video_place" autoplay muted controls></video>
+        <img id="image_place">
       </div>
     </div>
     <div class="remove-btn">
