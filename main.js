@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
       miss_count++;
       if (miss_count > 2) {
         process_exit();
-        window.location.href = "https://www.google.com/";
+        window.location.href = "https://github.com/sucks-555";
       } else {
         alert(`If you make ${3 - miss_count} more mistakes, you will not be able to use the service.`);
       }
@@ -113,6 +113,13 @@ function changeMedia(direction, media) {
     console.log(`[video][${count_video}] [${VIDEOList[count_video]}]`);
   }
 };
+function media_splice(Type) {
+  if (Type === "img") {
+    IMAGEList.splice(IMAGEList[count_image-1],1);
+  } else {
+    VIDEOList.splice(VIDEOList[count_video-1],1);
+  }
+}
 function handleImageInput(i) {
   const key = i.key;
   changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.IMAGE);
