@@ -21,9 +21,9 @@
         <li><a onclick="toggleDarkMode();">dark</a></li>
         <li><a onclick="toggleOnlyMode('Image');">IMG_only</a></li>
         <li><a onclick="toggleOnlyMode('video');">video_only</a></li>
+        <li><a onclick="process_exit();">process exit</a></li>
         <li><a onclick="media_splice('img');">splice(img)</a></li>
         <li><a onclick="media_splice('video');">splice(video)</a></li>
-        <li><a onclick="process_exit();">process exit</a></li>
       </ul>
       <div id="canvas">
         <video id="video_place" autoplay muted controls></video>
@@ -37,13 +37,13 @@
     <div class="background">
       <div class="side">
         <div class="left-side">
-          <button onclick="changeMedia('L', 'image');">back image</button>
-          <button onclick="changeMedia('R', 'image');">next image</button>
+          <button onclick="changeMedia('L', MEDIA_TYPES.IMAGE);">back image</button>
+          <button onclick="changeMedia('R', MEDIA_TYPES.IMAGE);">next image</button>
           <textarea class="image_input" cols="18" rows="2"></textarea>
         </div>
         <div class="right-side">
-          <button onclick="changeMedia('L', 'video');">back video</button>
-          <button onclick="changeMedia('R', 'video');">next video</button>
+          <button onclick="changeMedia('L', MEDIA_TYPES.VIDEO);">back video</button>
+          <button onclick="changeMedia('R', MEDIA_TYPES.VIDEO);">next video</button>
           <textarea class="video_input" cols="18" rows="2"></textarea>
         </div>
       </div>
