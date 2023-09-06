@@ -116,8 +116,10 @@ function changeMedia(direction, media) {
 function media_splice(Type) {
   if (Type === "img") {
     IMAGEList.splice(count_image, 1);
+    changeMedia('L', MEDIA_TYPES.IMAGE);
   } else {
     VIDEOList.splice(count_video, 1);
+    changeMedia('L', MEDIA_TYPES.VIDEO);
   }
 }
 function handleImageInput(i) {
