@@ -115,9 +115,9 @@ function changeMedia(direction, media) {
 };
 function media_splice(Type) {
   if (Type === "img") {
-    IMAGEList.splice(IMAGEList[count_image-1],1);
+    IMAGEList.splice(count_image, 1);
   } else {
-    VIDEOList.splice(VIDEOList[count_video-1],1);
+    VIDEOList.splice(count_video, 1);
   }
 }
 function handleImageInput(i) {
