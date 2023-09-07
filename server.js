@@ -5,12 +5,9 @@ const path = require('path');
 const fs = require('fs');
 const configPath = path.join(__dirname, 'config.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-const ENV = process.env
-const port = ENV.PORT;
-const exclusion = ENV.EXCLUSION
-const video = `/${ENV.VIDEO}`;
-const Image = `/${ENV.IMAGE}`;
-let count = 0;
+const env = process.env
+const port = env.PORT;
+const exclusion = env.EXCLUSION
 let IPAddress;
 let dir;
 
@@ -20,13 +17,13 @@ const imageExtensions = ['.png','.jpg','.jpeg','.webp','.gif','.PNG','.JPG','.JP
 if (config.Access.local) {
   IPAddress = '127.0.0.1';
 } else {
-  IPAddress = ENV.WiFi_IPAddress;
-}
+  IPAddress = env.WiFi_IPAddress;
+};
 if (config.dirConditions.samedirectory) {
-  dir = path.join(__dirname, '..', ENV.FOLDER);
+  dir = path.join(__dirname, '..', env.FOLDER);
 } else {
-  dir = path.join(ENV.FOLDER);
-}
+  dir = path.join(env.FOLDER);
+};
 console.log('Directory:', dir);
 console.log('IPAddress:', IPAddress);
 
@@ -47,37 +44,34 @@ function getFiles(folderPath, extensionFilter, resultArray, genre) {
     }
   });
 };
-function AccessCount(IP, Agent) {
-  count ++;
-  const result = {
-    UserAgent: Agent,
-    IPAddress: IP,
-    Total_Access: count,
-  };
-  return result;
-};
-function print(Type, list) {
+function log(Type, list) {
   list.forEach(item => console.log(`[${Type}] ${item}`));
 };
-app.get(Image, (req, res) => {
+app.get(`/${env.IMAGE}`, (req, res) => {
   const list_Image = [];
-  getFiles(path.join(dir,Image),imageExtensions,list_Image);
+  getFiles(path.join(dir,`/${env.IMAGE}`),imageExtensions,list_Image);
   res.json(list_Image);
-  print('Image',list_Image);
+  log('image',list_Image);
 });
-app.get(video, (req, res) => {
+app.get(`/${env.VIDEO}`, (req, res) => {
   const list_video = [];
-  getFiles(path.join(dir,video),videoExtensions,list_video);
+  getFiles(path.join(dir,`/${env.VIDEO}`),videoExtensions,list_video);
   res.json(list_video);
-  print('video',list_video);
-  const accessInfo = AccessCount(req.ip, req.get('User-Agent'));
-  console.log(accessInfo);
+  log('video',list_video);
 });
 app.get('/password', (req, res) => {
-  const password = ENV.password;
+  const password = env.password;
   res.json(password);
 });
-app.get('/stop', (req, res) => {
+app.get('/path', (req, res) => {
+  const path_json = {
+    'image': env.IMAGE,
+    'video': env.VIDEO
+  };
+  res.json(path_json)
+});
+app.get('/stop', () => {
+  console.log("process exit");
   process.exit();
 });
 app.use(express.static(path.join(__dirname, '')));
