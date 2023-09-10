@@ -39,9 +39,9 @@ window.onload = function () {
 };
 window.onmousewheel = function(event) {
   if (event.wheelDelta > 0) {
-    changeMedia("L",MEDIA_TYPES.IMAGE);
+    changeMedia("L", MEDIA_TYPES.IMAGE);
   } else {
-    changeMedia("R",MEDIA_TYPES.IMAGE);
+    changeMedia("R", MEDIA_TYPES.IMAGE);
   }
 };
 
@@ -70,6 +70,7 @@ async function initialize() {
 };
 
 function process_exit() {
+  window.location.href = hostURL;
   fetch('/stop', {
     method: 'GET',
   })
@@ -86,13 +87,15 @@ document.addEventListener("DOMContentLoaded", function () {
       passwordcontainer.classList.toggle('display_none')
       get_path = await fetch(`/path`);
       path_json = await get_path.json();
-      MEDIA_TYPES = { VIDEO: path_json.video, IMAGE: path_json.image };
+      MEDIA_TYPES = {
+        VIDEO: path_json.video,
+        IMAGE: path_json.image
+      };
       initialize();
     } else {
       miss_count++;
       if (miss_count > 2) {
         process_exit();
-        window.location.href = "https://github.com/sucks-555";
       } else {
         alert(`If you make ${3 - miss_count} more mistakes, you will not be able to use the service.`);
       }
@@ -143,7 +146,7 @@ function ejaculation() {
   let hours = Math.floor(result / 3600);
   let minutes = Math.floor((result % 3600) / 60);
   let seconds = result % 60;
-  let till_str = `${hours}時間${minutes}分${seconds}秒`; // 時間、分、秒を表示する形式に変更
+  let till_str = `${hours}時間${minutes}分${seconds}秒`;
   const ejacu_str = `${date_now_str} [TILL ${till_str}]`;
   document.querySelector(".ejaculation").textContent = ejacu_str;
   document.querySelector('.nowtime').textContent = `${date}`;
