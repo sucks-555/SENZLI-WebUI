@@ -124,7 +124,7 @@ function media_splice(Type) {
     VIDEOList.splice(count_video, 1);
     changeMedia('L', MEDIA_TYPES.VIDEO);
   }
-}
+};
 function handleImageInput(i) {
   const key = i.key;
   changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.IMAGE);
