@@ -84,4 +84,4 @@ menuボタン:<br>
 - PIP: PIPは"ピクチャ・イン・ピクチャ"の略称であり、Pythonのpipとは無関係です。
 - ejaculationボタン: 押した時間とカウントを表示します。
 </p>
-<img src="logo.png">
+<img src="public/logo.png">
