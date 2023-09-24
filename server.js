@@ -1,4 +1,4 @@
-require('dotenv').config('.env');
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -13,6 +13,7 @@ const exclusion = env.EXCLUSION || '@';
 const videoExtensions = ['.mp4', '.mov', '.MP4', '.MOV'];
 const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.PNG', '.JPG', '.JPEG', '.WEBP', '.GIF'];
 let isAuthenticated = false;
+let authenticatedIP = null;
 let IPAddress;
 let dir;
 
@@ -50,7 +51,8 @@ app.use(`/${env.IMAGE}`, express.static(path.join(dir, env.IMAGE)));
 app.use(`/${env.VIDEO}`, express.static(path.join(dir, env.VIDEO)));
 
 app.use(['/path', `/${env.IMAGE}`, `/${env.VIDEO}`], (req, res, next) => {
-  if (isAuthenticated) {
+  const clientIP = req.ip;
+  if (isAuthenticated && clientIP === authenticatedIP) {
     next();
   } else {
     res.status(401).send('Unauthorized');
@@ -61,6 +63,7 @@ app.post('/password', (req, res) => {
   const { password } = req.body;
   if (password === correctPassword) {
     isAuthenticated = true;
+    authenticatedIP = req.ip;
     res.status(200).send('OK');
   } else {
     res.status(401).send('Unauthorized');
@@ -80,14 +83,15 @@ app.get(`/${env.IMAGE}`, async (req, res) => {
   await getFilesAsync(path.join(dir, env.IMAGE), imageExtensions, listImage);
   res.json(listImage);
 });
-
 app.get(`/${env.VIDEO}`, async (req, res) => {
   const listVideo = [];
   await getFilesAsync(path.join(dir, env.VIDEO), videoExtensions, listVideo);
   res.json(listVideo);
 });
 
-app.get('/stop', () => { process.exit(); });
+app.get('/stop', () => {
+  process.exit();
+});
 
 app.listen(port, IPAddress, () => {
   console.log(`Server listening on port ${port}\nhttp://${IPAddress}:${port}`);
