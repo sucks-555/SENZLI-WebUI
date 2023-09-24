@@ -29,10 +29,8 @@ window.onload = function () {
   const date_str = `[${Access.getHours()}時${Access.getMinutes()}分${Access.getSeconds()}秒]`;
   document.querySelector('.nowtime').textContent = `${date_str}`;
   date = date_str;
-  console.log(date_str);
   const input = document.getElementById('range');
   input.addEventListener('change', () => {
-    console.log(`speed ${input.value}`);
     speed(input.value);
   });
 };
@@ -57,7 +55,6 @@ function fetchMedia(folder, list, element) {
     .then(media => {
       list.push(...media);
       const max = media.length;
-      console.log(`[Media] Type='${media}',length='${max}'`, list);
       element.src = `/${folder}/${list[0]}`;
       return max;
     });
@@ -119,12 +116,10 @@ function changeMedia(direction, media) {
     const length_image = IMAGEList.length;
     count_image = direction === 'L' ? (count_image === 0 ? length_image - 1 : (count_image - 1) % length_image) : (count_image + 1) % length_image;
     IMAGEPlayer.src = `/${MEDIA_TYPES.IMAGE}/${IMAGEList[count_image]}`;
-    console.log(`[Image][${count_image}] [${IMAGEList[count_image]}]`);
   } else {
     const length_video = VIDEOList.length;
     count_video = direction === 'L' ? (count_video === 0 ? length_video - 1 : (count_video - 1) % length_video) : (count_video + 1) % length_video;
     VIDEOPlayer.src = `/${MEDIA_TYPES.VIDEO}/${VIDEOList[count_video]}`;
-    console.log(`[video][${count_video}] [${VIDEOList[count_video]}]`);
   }
 };
 function media_splice(Type) {
@@ -136,13 +131,11 @@ function media_splice(Type) {
     changeMedia('L', MEDIA_TYPES.VIDEO);
   }
 };
-function handleImageInput(i) {
-  const key = i.key;
-  changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.IMAGE);
+function handleImageInput(k) {
+  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_TYPES.IMAGE);
 };
-function handleVideoInput(v) {
-  const key = v.key;
-  changeMedia(key === 'ArrowRight' || key === 'w' ? 'R' : 'L', MEDIA_TYPES.VIDEO);
+function handleVideoInput(k) {
+  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_TYPES.VIDEO);
 };
 function ejacu_count() {
   ejaculation_count ++;
