@@ -27,9 +27,6 @@ if (config.dirConditions.samedirectory) {
   dir = path.join(env.FOLDER || __dirname);
 }
 
-console.log('Directory:', dir);
-console.log('IPAddress:', IPAddress);
-
 function getFiles(folderPath, extensionFilter, resultArray, genre = '') {
   const files = fs.readdirSync(folderPath);
   files.forEach(file => {
@@ -47,22 +44,16 @@ function getFiles(folderPath, extensionFilter, resultArray, genre = '') {
   });
 }
 
-function log(Type, list) {
-  list.forEach(item => console.log(`[${Type}] ${item}`));
-}
-
 app.get(`/${env.IMAGE}`, (req, res) => {
   const listImage = [];
   getFiles(path.join(dir, env.IMAGE), imageExtensions, listImage);
   res.json(listImage);
-  log('image', listImage);
 });
 
 app.get(`/${env.VIDEO}`, (req, res) => {
   const listVideo = [];
   getFiles(path.join(dir, env.VIDEO), videoExtensions, listVideo);
   res.json(listVideo);
-  log('video', listVideo);
 });
 
 app.post('/password', (req, res) => {
@@ -83,13 +74,12 @@ app.get('/path', (req, res) => {
 });
 
 app.get('/stop', () => {
-  console.log("process exit");
   process.exit();
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(`/${env.IMAGE}`, express.static(path.join(__dirname, env.IMAGE)));
-app.use(`/${env.VIDEO}`, express.static(path.join(__dirname, env.VIDEO)));
+app.use(`/${env.IMAGE}`, express.static(path.join(dir, env.IMAGE)));
+app.use(`/${env.VIDEO}`, express.static(path.join(dir, env.VIDEO)));
 
 app.listen(port, IPAddress, () => {
   console.log(`Server listening on port ${port}\nhttp://${IPAddress}:${port}`);
