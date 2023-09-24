@@ -66,7 +66,7 @@ async function initialize() {
 };
 
 function process_exit() {
-  window.location.href = location.host;
+  location.href = 'http://' + location.host;
   fetch('/stop', {
     method: 'GET',
   })
