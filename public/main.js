@@ -1,27 +1,26 @@
-let getData,get_path,MEDIA_TYPES;
-let IMAGEList = [];
-let VIDEOList = [];
-let count_image = 0;
-let count_video = 0;
-let timer,date;
-let ejaculation_count = 0;
-let start = {
-  time: []
-};
+let
+  getData,get_path,
+  MEDIA_PATH,
+  IMAGEList=[],VIDEOList=[],
+  count_image = 0, count_video = 0,
+  timer,date,ejaculation_count = 0,
+  start = {
+    time:[]
+  };
 
-const body = document.querySelector('.main');
-const img = document.querySelector('#image_place');
-const video = document.querySelector('#video_place');
-const background = document.querySelector(".background");
-const menu = document.querySelector(".menu")
-const clock = document.getElementById("clock");
-const range = document.getElementById("range");
-const passwordcontainer = document.querySelector(".password-container");
-
-const VIDEOPlayer = document.getElementById('video_place');
-const IMAGEPlayer = document.getElementById('image_place');
-const InputIMAGE = document.querySelector('.image_input');
-const InputVIDEO = document.querySelector('.video_input');
+const
+  body = document.querySelector(".main"),
+  img = document.querySelector("#image_place"),
+  video = document.querySelector("#video_place"),
+  background = document.querySelector(".background"),
+  menu = document.querySelector(".menu"),
+  clock = document.getElementById("clock"),
+  range = document.getElementById("range"),
+  passwordcontainer = document.querySelector(".password-container"),
+  VIDEOPlayer = document.getElementById("video_place"),
+  IMAGEPlayer = document.getElementById("image_place"),
+  InputIMAGE = document.querySelector(".image_input"),
+  InputVIDEO = document.querySelector(".video_input");
 
 window.onload = function () {
   start.time = Date.now();
@@ -34,18 +33,19 @@ window.onload = function () {
     speed(input.value);
   });
 };
+
 window.onmousewheel = function(event) {
   if (event.wheelDelta > 0) {
-    changeMedia("L", MEDIA_TYPES.IMAGE);
+    changeMedia("L", MEDIA_PATH.IMAGE);
   } else {
-    changeMedia("R", MEDIA_TYPES.IMAGE);
+    changeMedia("R", MEDIA_PATH.IMAGE);
   }
 };
 
 function speed(b) {
   clearInterval(timer);
   timer = setInterval(function () {
-    changeMedia('R', MEDIA_TYPES.IMAGE);
+    changeMedia('R', MEDIA_PATH.IMAGE);
   }, b * 1000);
 };
 
@@ -61,8 +61,8 @@ function fetchMedia(folder, list, element) {
 };
 
 async function initialize() {
-  await fetchMedia(MEDIA_TYPES.IMAGE, IMAGEList, IMAGEPlayer);
-  await fetchMedia(MEDIA_TYPES.VIDEO, VIDEOList, VIDEOPlayer);
+  await fetchMedia(MEDIA_PATH.IMAGE, IMAGEList, IMAGEPlayer);
+  await fetchMedia(MEDIA_PATH.VIDEO, VIDEOList, VIDEOPlayer);
 };
 
 function process_exit() {
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         passwordcontainer.classList.toggle('display_none');
         get_path = await fetch(`/path`);
         getData = await get_path.json();
-        MEDIA_TYPES = {
+        MEDIA_PATH = {
           VIDEO: getData.video,
           IMAGE: getData.image
         };
@@ -112,36 +112,41 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function changeMedia(direction, media) {
-  if (media === MEDIA_TYPES.IMAGE) {
+  if (media === MEDIA_PATH.IMAGE) {
     const length_image = IMAGEList.length;
     count_image = direction === 'L' ? (count_image === 0 ? length_image - 1 : (count_image - 1) % length_image) : (count_image + 1) % length_image;
-    IMAGEPlayer.src = `/${MEDIA_TYPES.IMAGE}/${IMAGEList[count_image]}`;
+    IMAGEPlayer.src = `/${MEDIA_PATH.IMAGE}/${IMAGEList[count_image]}`;
   } else {
     const length_video = VIDEOList.length;
     count_video = direction === 'L' ? (count_video === 0 ? length_video - 1 : (count_video - 1) % length_video) : (count_video + 1) % length_video;
-    VIDEOPlayer.src = `/${MEDIA_TYPES.VIDEO}/${VIDEOList[count_video]}`;
+    VIDEOPlayer.src = `/${MEDIA_PATH.VIDEO}/${VIDEOList[count_video]}`;
   }
 };
+
 function media_splice(Type) {
   if (Type === "img") {
     IMAGEList.splice(count_image, 1);
-    changeMedia('L', MEDIA_TYPES.IMAGE);
+    changeMedia('L', MEDIA_PATH.IMAGE);
   } else {
     VIDEOList.splice(count_video, 1);
-    changeMedia('L', MEDIA_TYPES.VIDEO);
+    changeMedia('L', MEDIA_PATH.VIDEO);
   }
 };
+
 function handleImageInput(k) {
-  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_TYPES.IMAGE);
+  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_PATH.IMAGE);
 };
+
 function handleVideoInput(k) {
-  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_TYPES.VIDEO);
+  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_PATH.VIDEO);
 };
+
 function ejacu_count() {
   ejaculation_count ++;
   document.querySelector('.ejaculation-count').textContent = `${ejaculation_count}`;
   ejaculation();
 };
+
 function ejaculation() {
   let now = new Date();
   let date_now = Date.now();
@@ -157,6 +162,7 @@ function ejaculation() {
   start.time = date_now;
   date = date_now_str;
 };
+
 InputIMAGE.addEventListener('keydown', handleImageInput);
 InputVIDEO.addEventListener('keydown', handleVideoInput);
 
@@ -165,8 +171,9 @@ VIDEOPlayer.addEventListener('ended', () => {
   if (count_video >= VIDEOList.length) {
     count_video = 0;
   }
-  VIDEOPlayer.src = `/${MEDIA_TYPES.VIDEO}/${VIDEOList[count_video]}`;
+  VIDEOPlayer.src = `/${MEDIA_PATH.VIDEO}/${VIDEOList[count_video]}`;
 });
+
 function playVideo() {
   if (VIDEOPlayer.paused) {
     VIDEOPlayer.play();
