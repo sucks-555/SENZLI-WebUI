@@ -238,9 +238,6 @@ function togglePictureInPicture() {
   } else {
     VIDEOPlayer.requestPictureInPicture();
   }
-  if (VIDEOPlayer.hasAttribute('disablePictureInPicture')) {
-    VIDEOPlayer.removeAttribute('disablePictureInPicture');
-  }
 }
 function input(event) {
   if (event.key === exchange && permit) {
