@@ -4,10 +4,12 @@ let
   IMAGEList=[],VIDEOList=[],
   count_image = 0, count_video = 0,
   timer,date,ejaculation_count = 0,
+  permit = true,
+  nullify = "R",
+  exchange = "A",
   start = {
     time:[]
   };
-
 const
   body = document.querySelector(".main"),
   img = document.querySelector("#image_place"),
@@ -23,6 +25,7 @@ const
   InputVIDEO = document.querySelector(".video_input");
 
 window.onload = function () {
+  load()
   start.time = Date.now();
   let Access = new Date();
   const date_str = `[${Access.getHours()}時${Access.getMinutes()}分${Access.getSeconds()}秒]`;
@@ -65,13 +68,6 @@ async function initialize() {
   await fetchMedia(MEDIA_PATH.VIDEO, VIDEOList, VIDEOPlayer);
 };
 
-function process_exit() {
-  location.href = 'http://' + location.host;
-  fetch('/stop', {
-    method: 'GET',
-  })
-};
-
 document.addEventListener("DOMContentLoaded", function () {
   let miss_count = 0;
   const submitButton = document.getElementById("submit-button");
@@ -100,9 +96,6 @@ document.addEventListener("DOMContentLoaded", function () {
         miss_count++;
         if (miss_count >= 2) {
           process_exit();
-        } else {
-          alert(`あと${2 - miss_count}回間違えるとサービスが利用できなくなります。`);
-          console.error('パスワードが正しくありません。');
         }
       }
     } catch (e) {
@@ -110,6 +103,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+function process_exit() {
+  location.href = 'http://' + location.host;
+  fetch('/stop', {
+    method: 'GET',
+  })
+};
+
+function load() {
+  fetch('/load', {
+    method: 'GET',
+  })
+};
 
 function changeMedia(direction, media) {
   if (media === MEDIA_PATH.IMAGE) {
@@ -184,6 +190,7 @@ function pauseVideo() {
     VIDEOPlayer.pause();
   }
 };
+
 function toggleOnlyMode(media) {
   if (media === 'Image') {
     img.classList.toggle('only_mode');
@@ -224,3 +231,25 @@ function footer_remove() {
   background.classList.toggle("remove");
   range.classList.toggle("display_none");
 };
+
+function togglePictureInPicture() {
+  if (document.pictureInPictureElement) {
+    document.exitPictureInPicture();
+  } else {
+    VIDEOPlayer.requestPictureInPicture();
+  }
+  if (VIDEOPlayer.hasAttribute('disablePictureInPicture')) {
+    VIDEOPlayer.removeAttribute('disablePictureInPicture');
+  }
+}
+function input(event) {
+  if (event.key === exchange && permit) {
+    togglePictureInPicture();
+  } else if (event.key === nullify) {
+    permit = !permit;
+  }
+}
+window.addEventListener('keydown', input);
+window.addEventListener('beforeunload', () => {
+  window.removeEventListener('keydown', input);
+});
