@@ -12,15 +12,18 @@ const port = env.PORT || 3000;
 const exclusion = env.EXCLUSION || '@';
 const videoExtensions = ['.mp4', '.mov', '.MP4', '.MOV'];
 const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.PNG', '.JPG', '.JPEG', '.WEBP', '.GIF'];
+const AccessList = [];
+const MismatchList = [];
+const loginList = [];
 let isAuthenticated = false;
 let authenticatedIP = null;
-let IPAddress;
+let IP;
 let dir;
 
 if (config.Access.local) {
-  IPAddress = '127.0.0.1';
+  IP = '127.0.0.1';
 } else {
-  IPAddress = env.WiFi_IPAddress || '127.0.0.1';
+  IP = env.IPv4 || '127.0.0.1';
 }
 if (config.dirConditions.samedirectory) {
   dir = path.join(__dirname, '..', env.FOLDER);
@@ -59,14 +62,28 @@ app.use(['/path', `/${env.IMAGE}`, `/${env.VIDEO}`], (req, res, next) => {
   }
 });
 
+function TimeValue() {
+  let now = new Date();
+  let result = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+  return result
+}
+
 app.post('/password', (req, res) => {
   const { password } = req.body;
   if (password === correctPassword) {
     isAuthenticated = true;
     authenticatedIP = req.ip;
     res.status(200).send('OK');
+    loginList.push({
+      "ip": req.ip,
+      "time": TimeValue()
+    });
   } else {
     res.status(401).send('Unauthorized');
+    MismatchList.push({
+      "ip": req.ip,
+      "time": TimeValue()
+    });
   }
 });
 
@@ -90,9 +107,19 @@ app.get(`/${env.VIDEO}`, async (req, res) => {
 });
 
 app.get('/stop', () => {
+  console.log('Access', JSON.stringify(AccessList));
+  console.log('Password Mismatch', JSON.stringify(MismatchList));
+  console.log('Login', JSON.stringify(loginList));
   process.exit();
 });
+app.get('/load', (req, res) => {
+  console.log(`Access [${req.ip}] - ${TimeValue()}`);
+  AccessList.push({
+    "ip": req.ip,
+    "time": TimeValue()
+  });
+});
 
-app.listen(port, IPAddress, () => {
-  console.log(`Server listening on port ${port}\nhttp://${IPAddress}:${port}`);
+app.listen(port, IP, () => {
+  console.log(`Server listening on port ${port}\nhttp://${IP}:${port}`);
 });
