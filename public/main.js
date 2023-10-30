@@ -11,7 +11,7 @@ let
     time:[]
   };
 const
-  body = document.querySelector(".main"),
+  main = document.querySelector(".main"),
   img = document.querySelector("#image_place"),
   video = document.querySelector("#video_place"),
   background = document.querySelector(".background"),
@@ -23,11 +23,11 @@ const
   IMAGEPlayer = document.getElementById("image_place"),
   InputIMAGE = document.querySelector(".image_input"),
   InputVIDEO = document.querySelector(".video_input"),
-  input = document.getElementById('range'),
-  savedDarkMode = localStorage.getItem('darkMode');
+  savedDarkMode = localStorage.getItem('darkMode'),
+  input = document.getElementById('range');
 
 window.onload = function () {
-  load()
+  load();
   start.time = Date.now();
   let Access = new Date();
   const date_str = `[${Access.getHours()}時${Access.getMinutes()}分${Access.getSeconds()}秒]`;
@@ -55,6 +55,7 @@ function speed(b) {
     changeMedia('R', MEDIA_PATH.IMAGE);
   }, b * 1000);
 };
+
 
 function fetchMedia(folder, list, element) {
   return fetch(`/${folder}`)
@@ -219,8 +220,8 @@ function togglePictureInPicture() {
   }
 };
 function toggleDarkMode() {
-  body.classList.toggle('dark');
-  const isDarkMode = body.classList.contains('dark');
+  main.classList.toggle('dark');
+  const isDarkMode = main.classList.contains('dark');
   localStorage.setItem('darkMode', isDarkMode);
 };
 function menu_toggle() {
@@ -231,14 +232,6 @@ function footer_remove() {
   background.classList.toggle("remove");
   range.classList.toggle("display_none");
 };
-
-function togglePictureInPicture() {
-  if (document.pictureInPictureElement) {
-    document.exitPictureInPicture();
-  } else {
-    VIDEOPlayer.requestPictureInPicture();
-  }
-}
 function keydown(event) {
   if (event.key === exchange && permit) {
     togglePictureInPicture();
@@ -246,6 +239,7 @@ function keydown(event) {
     permit = !permit;
   }
 }
+
 window.addEventListener('keydown', keydown);
 window.addEventListener('beforeunload', () => {
   window.removeEventListener('keydown', keydown);
