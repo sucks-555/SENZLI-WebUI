@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       if (response.ok) {
         passwordcontainer.classList.toggle('display_none');
-        get_path = await fetch(`/path`);
+        get_path = await fetch('/path');
         getData = await get_path.json();
         MEDIA_PATH = {
           VIDEO: getData.video,
