@@ -22,7 +22,9 @@ const
   VIDEOPlayer = document.getElementById("video_place"),
   IMAGEPlayer = document.getElementById("image_place"),
   InputIMAGE = document.querySelector(".image_input"),
-  InputVIDEO = document.querySelector(".video_input");
+  InputVIDEO = document.querySelector(".video_input"),
+  input = document.getElementById('range'),
+  savedDarkMode = localStorage.getItem('darkMode');
 
 window.onload = function () {
   load()
@@ -31,10 +33,12 @@ window.onload = function () {
   const date_str = `[${Access.getHours()}時${Access.getMinutes()}分${Access.getSeconds()}秒]`;
   document.querySelector('.nowtime').textContent = `${date_str}`;
   date = date_str;
-  const input = document.getElementById('range');
   input.addEventListener('change', () => {
     speed(input.value);
   });
+  if (savedDarkMode === 'true') {
+    toggleDarkMode();
+  };
 };
 
 window.onmousewheel = function(event) {
@@ -219,10 +223,6 @@ function toggleDarkMode() {
   const isDarkMode = body.classList.contains('dark');
   localStorage.setItem('darkMode', isDarkMode);
 };
-const savedDarkMode = localStorage.getItem('darkMode');
-if (savedDarkMode === 'true') {
-  toggleDarkMode();
-};
 function menu_toggle() {
   menu.classList.toggle("open");
 };
@@ -239,14 +239,14 @@ function togglePictureInPicture() {
     VIDEOPlayer.requestPictureInPicture();
   }
 }
-function input(event) {
+function keydown(event) {
   if (event.key === exchange && permit) {
     togglePictureInPicture();
   } else if (event.key === nullify) {
     permit = !permit;
   }
 }
-window.addEventListener('keydown', input);
+window.addEventListener('keydown', keydown);
 window.addEventListener('beforeunload', () => {
-  window.removeEventListener('keydown', input);
+  window.removeEventListener('keydown', keydown);
 });
