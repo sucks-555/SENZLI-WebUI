@@ -18,7 +18,7 @@ const loginList = [];
 let isAuthenticated = false;
 let authenticatedIP = null;
 const localhost = '127.0.0.1';
-const IP = (config.Access.local) ? localhost : env.IPv4 || localhost;
+const IP = config.Access.local ? localhost : env.IPv4 ?? localhost;
 const dir = config.dirConditions.samedirectory ? path.join(__dirname, '..', env.FOLDER) : path.join(env.FOLDER || __dirname);
 
 async function getFilesAsync(folderPath, extensionFilter, resultArray, genre = '') {
