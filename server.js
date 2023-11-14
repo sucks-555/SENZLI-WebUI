@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const configPath = path.join(__dirname, 'config.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const env = process.env;
-const correctPassword = env.password || 'NoPassword';
+const correctPassword = env.password || 'qwerty';
 const port = env.PORT || 3000;
 const exclusion = env.EXCLUSION || '@';
 const videoExtensions = ['.mp4', '.mov', '.MP4', '.MOV'];
@@ -17,19 +17,9 @@ const MismatchList = [];
 const loginList = [];
 let isAuthenticated = false;
 let authenticatedIP = null;
-let IP;
-let dir;
-
-if (config.Access.local) {
-  IP = '127.0.0.1';
-} else {
-  IP = env.IPv4 || '127.0.0.1';
-}
-if (config.dirConditions.samedirectory) {
-  dir = path.join(__dirname, '..', env.FOLDER);
-} else {
-  dir = path.join(env.FOLDER || __dirname);
-}
+const localhost = '127.0.0.1';
+const IP = (config.Access.local) ? localhost : env.IPv4 || localhost;
+const dir = config.dirConditions.samedirectory ? path.join(__dirname, '..', env.FOLDER) : path.join(env.FOLDER || __dirname);
 
 async function getFilesAsync(folderPath, extensionFilter, resultArray, genre = '') {
   const files = await fs.promises.readdir(folderPath);
@@ -55,16 +45,12 @@ app.use(`/${env.VIDEO}`, express.static(path.join(dir, env.VIDEO)));
 
 app.use(['/path', `/${env.IMAGE}`, `/${env.VIDEO}`], (req, res, next) => {
   const clientIP = req.ip;
-  if (isAuthenticated && clientIP === authenticatedIP) {
-    next();
-  } else {
-    res.status(401).send('Unauthorized');
-  }
+  isAuthenticated && clientIP === authenticatedIP ? next() : res.status(401).send('Unauthorized');
 });
 
-function TimeValue() {
-  let now = new Date();
-  let result = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+function currentTime() {
+  const now = new Date();
+  const result = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
   return result
 }
 
@@ -74,16 +60,12 @@ app.post('/password', (req, res) => {
     isAuthenticated = true;
     authenticatedIP = req.ip;
     res.status(200).send('OK');
-    loginList.push({
-      "ip": req.ip,
-      "time": TimeValue()
-    });
+    console.log(`[${req.ip}] login - ${currentTime()}`);
+    loginList.push({"ip": req.ip,"time": currentTime()});
   } else {
     res.status(401).send('Unauthorized');
-    MismatchList.push({
-      "ip": req.ip,
-      "time": TimeValue()
-    });
+    console.log(`[${req.ip}]がパスワードを間違えました - ${currentTime()}`)
+    MismatchList.push({"ip": req.ip,"time": currentTime()});
   }
 });
 
@@ -107,17 +89,16 @@ app.get(`/${env.VIDEO}`, async (req, res) => {
 });
 
 app.get('/stop', () => {
-  console.log('Access', JSON.stringify(AccessList));
-  console.log('Password Mismatch', JSON.stringify(MismatchList));
-  console.log('Login', JSON.stringify(loginList));
+  console.log(
+    'Access', JSON.stringify(AccessList),
+    'Password Mismatch', JSON.stringify(MismatchList),
+    'Login', JSON.stringify(loginList)
+  );
   process.exit();
 });
 app.get('/load', (req, res) => {
-  console.log(`Access [${req.ip}] - ${TimeValue()}`);
-  AccessList.push({
-    "ip": req.ip,
-    "time": TimeValue()
-  });
+  console.log(`Access [${req.ip}] - ${currentTime()}`);
+  AccessList.push({"ip": req.ip,"time": currentTime()});
 });
 
 app.listen(port, IP, () => {
