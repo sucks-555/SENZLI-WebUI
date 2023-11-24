@@ -51,10 +51,14 @@ window.onmousewheel = function(event) {
 
 function speed(b) {
   clearInterval(timer);
+  if (b == 10 && timer) {
+    timer && clearInterval(timer);
+  }
   timer = setInterval(function () {
-    changeMedia('R', MEDIA_PATH.IMAGE);
+    changeMedia('R', MEDIA_TYPE.IMAGE);
   }, b * 1000);
 };
+
 
 
 function fetchMedia(folder, list, element) {
