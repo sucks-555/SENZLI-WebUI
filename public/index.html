@@ -16,14 +16,17 @@
       </div>
     </div>
     <div class="main">
-      <div id="clock"><span class="ejaculation-count">0</span><span class="nowtime"></span><span class="ejaculation"></span></div>
       <ul class="menu">
-        <li><a onclick="toggleDarkMode();">dark</a></li>
-        <li><a onclick="toggleOnlyMode('Image');">IMG_only</a></li>
-        <li><a onclick="toggleOnlyMode('video');">video_only</a></li>
         <li><a onclick="process_exit();">process exit</a></li>
-        <li><a onclick="media_splice('img');">splice(img)</a></li>
-        <li><a onclick="media_splice('video');">splice(video)</a></li>
+        <li><a onclick="toggleDarkMode();">dark</a></li>
+        <li><a onclick="toggleOnlyMode('image');">img only</a></li>
+        <li><a onclick="toggleOnlyMode('video');">video only</a></li>
+        <li><a onclick="media_splice('img');">del img</a></li>
+        <li><a onclick="media_splice('video');">del video</a></li>
+        <li><a onclick="undoMediaDeletion('image');">取消 img</a></li>
+        <li><a onclick="undoMediaDeletion('video');">取消 video</a></li>
+        <li><a onclick="choice();">choice</a></li>
+        <li><a onclick="choice_Save();">上書き</a></li>
       </ul>
       <div id="canvas">
         <video id="video_place" autoplay muted controls></video>
@@ -37,13 +40,13 @@
     <div class="background">
       <div class="side">
         <div class="left-side">
-          <button onclick="changeMedia('L', MEDIA_PATH.IMAGE);">back image</button>
-          <button onclick="changeMedia('R', MEDIA_PATH.IMAGE);">next image</button>
+          <button onclick="changeMedia('L', MEDIA_TYPE.IMAGE);">back image</button>
+          <button onclick="changeMedia('R', MEDIA_TYPE.IMAGE);">next image</button>
           <textarea class="image_input" cols="18" rows="2"></textarea>
         </div>
         <div class="right-side">
-          <button onclick="changeMedia('L', MEDIA_PATH.VIDEO);">back video</button>
-          <button onclick="changeMedia('R', MEDIA_PATH.VIDEO);">next video</button>
+          <button onclick="changeMedia('L', MEDIA_TYPE.VIDEO);">back video</button>
+          <button onclick="changeMedia('R', MEDIA_TYPE.VIDEO);">next video</button>
           <textarea class="video_input" cols="18" rows="2"></textarea>
         </div>
       </div>
@@ -52,7 +55,6 @@
         <br>
         <button onclick="togglePlayPause()">Play</button>
         <button onclick="togglePictureInPicture()">PIP</button>
-        <button onclick="ejacu_count();">EJACU</button>
       </div>
     </div>
     <script src="main.js"></script>
