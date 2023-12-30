@@ -14,8 +14,8 @@ const videoExtensions = ['.mp4', '.mov', '.MP4', '.MOV'];
 const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.PNG', '.JPG', '.JPEG', '.WEBP', '.GIF'];
 const AccessList = [],MismatchList = [],loginList = [];
 const localhost = '127.0.0.1';
-const IP = config.Access.local ? localhost : env.IPv4 ?? localhost;
-const dir = config.dirConditions.samedirectory ? path.join(__dirname, '..', env.FOLDER) : path.join(env.FOLDER || __dirname);
+const IP = config.local ? localhost : env.IPv4 ?? localhost;
+const dir = config.samedirectory ? path.join(__dirname, '..', env.FOLDER) : path.join(env.FOLDER || __dirname);
 let isAuthenticated = false;
 let authenticatedIP = null;
 
