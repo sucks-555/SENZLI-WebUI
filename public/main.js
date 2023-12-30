@@ -24,17 +24,13 @@ window.onload = function () {
   input.addEventListener('change', () => {
     speed(input.value);
   });
-  if (savedDarkMode === 'true') {
-    toggleDarkMode();
-  };
+  savedDarkMode === 'true' && toggleDarkMode();
+  window.addEventListener('keydown', keydown);
+
 };
 
 window.onmousewheel = function(event) {
-  if (event.wheelDelta > 0) {
-    changeMedia("L", MEDIA_TYPE.IMAGE);
-  } else {
-    changeMedia("R", MEDIA_TYPE.IMAGE);
-  }
+  event.wheelDelta > 0 ? changeMedia("L", MEDIA_TYPE.IMAGE) : changeMedia("R", MEDIA_TYPE.IMAGE);
 };
 
 function speed(b) {
@@ -42,9 +38,7 @@ function speed(b) {
   timer = setInterval(function () {
     changeMedia('R', MEDIA_TYPE.IMAGE);
   }, b * 1000);
-  if (b == 10 && timer) {
-    timer && clearInterval(timer);
-  }
+  b == 10 && timer && timer && clearInterval(timer);
 };
 
 function fetchMedia(folder, list, element) {
@@ -89,9 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
         initialize();
       } else {
         miss_count++;
-        if (miss_count >= 2) {
-          process_exit();
-        }
+        miss_count >= 2 && process_exit();
       }
     } catch (e) {
       console.error(`error ${e.message}`);
@@ -174,38 +166,25 @@ VIDEOPlayer.addEventListener('ended', () => {
 });
 
 function playVideo() {
-  if (VIDEOPlayer.paused) {
-    VIDEOPlayer.play();
-  }
+  VIDEOPlayer.paused && VIDEOPlayer.play();
 };
 function pauseVideo() {
-  if (!VIDEOPlayer.paused) {
-    VIDEOPlayer.pause();
-  }
+  !VIDEOPlayer.paused && VIDEOPlayer.pause();
 };
 
 function toggleOnlyMode(media) {
-  if (media === 'image') {
-    img.classList.toggle('only_mode');
-    video.classList.toggle('display_none');
-  } else {
-    video.classList.toggle('only_mode');
-    img.classList.toggle('display_none');
-  }
+  media === 'image' ?
+    img.classList.toggle('only_mode') +
+    video.classList.toggle('display_none')
+  :
+    video.classList.toggle('only_mode') +
+    img.classList.toggle('display_none')
 };
 function togglePlayPause() {
-  if (VIDEOPlayer.paused) {
-    playVideo();
-  } else {
-    pauseVideo();
-  }
+  VIDEOPlayer.paused ? playVideo() : pauseVideo();
 };
 function togglePictureInPicture() {
-  if (document.pictureInPictureElement) {
-    document.exitPictureInPicture();
-  } else {
-    VIDEOPlayer.requestPictureInPicture();
-  }
+  document.pictureInPictureElement ? document.exitPictureInPicture() : VIDEOPlayer.requestPictureInPicture();
 };
 function toggleDarkMode() {
   main.classList.toggle('dark');
@@ -226,8 +205,3 @@ function keydown(event) {
     permit = !permit;
   }
 }
-
-window.addEventListener('keydown', keydown);
-window.addEventListener('beforeunload', () => {
-  window.removeEventListener('keydown', keydown);
-});
