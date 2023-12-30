@@ -1,22 +1,16 @@
 let
   getData,get_path,
-  MEDIA_PATH,
-  IMAGEList=[],VIDEOList=[],
+  MEDIA_TYPE,
+  choice_list=[],IMAGEList=[],VIDEOList=[],
   count_image = 0, count_video = 0,
-  timer,date,ejaculation_count = 0,
-  permit = true,
-  nullify = "R",
-  exchange = "A",
-  start = {
-    time:[]
-  };
+  timer,
+  permit = true;
 const
   main = document.querySelector(".main"),
   img = document.querySelector("#image_place"),
   video = document.querySelector("#video_place"),
   background = document.querySelector(".background"),
   menu = document.querySelector(".menu"),
-  clock = document.getElementById("clock"),
   range = document.getElementById("range"),
   passwordcontainer = document.querySelector(".password-container"),
   VIDEOPlayer = document.getElementById("video_place"),
@@ -28,11 +22,6 @@ const
 
 window.onload = function () {
   load();
-  start.time = Date.now();
-  let Access = new Date();
-  const date_str = `[${Access.getHours()}時${Access.getMinutes()}分${Access.getSeconds()}秒]`;
-  document.querySelector('.nowtime').textContent = `${date_str}`;
-  date = date_str;
   input.addEventListener('change', () => {
     speed(input.value);
   });
@@ -43,9 +32,9 @@ window.onload = function () {
 
 window.onmousewheel = function(event) {
   if (event.wheelDelta > 0) {
-    changeMedia("L", MEDIA_PATH.IMAGE);
+    changeMedia("L", MEDIA_TYPE.IMAGE);
   } else {
-    changeMedia("R", MEDIA_PATH.IMAGE);
+    changeMedia("R", MEDIA_TYPE.IMAGE);
   }
 };
 
@@ -71,8 +60,8 @@ function fetchMedia(folder, list, element) {
 };
 
 async function initialize() {
-  await fetchMedia(MEDIA_PATH.IMAGE, IMAGEList, IMAGEPlayer);
-  await fetchMedia(MEDIA_PATH.VIDEO, VIDEOList, VIDEOPlayer);
+  await fetchMedia(MEDIA_TYPE.IMAGE, IMAGEList, IMAGEPlayer);
+  await fetchMedia(MEDIA_TYPE.VIDEO, VIDEOList, VIDEOPlayer);
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -92,9 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       if (response.ok) {
         passwordcontainer.classList.toggle('display_none');
-        get_path = await fetch('/path');
+        get_path = await fetch("/path");
         getData = await get_path.json();
-        MEDIA_PATH = {
+        MEDIA_TYPE = {
           VIDEO: getData.video,
           IMAGE: getData.image
         };
@@ -125,66 +114,70 @@ function load() {
 };
 
 function changeMedia(direction, media) {
-  if (media === MEDIA_PATH.IMAGE) {
+  if (media === MEDIA_TYPE.IMAGE) {
     const length_image = IMAGEList.length;
     count_image = direction === 'L' ? (count_image === 0 ? length_image - 1 : (count_image - 1) % length_image) : (count_image + 1) % length_image;
-    IMAGEPlayer.src = `/${MEDIA_PATH.IMAGE}/${IMAGEList[count_image]}`;
+    IMAGEPlayer.src = `/${MEDIA_TYPE.IMAGE}/${IMAGEList[count_image]}`;
   } else {
     const length_video = VIDEOList.length;
     count_video = direction === 'L' ? (count_video === 0 ? length_video - 1 : (count_video - 1) % length_video) : (count_video + 1) % length_video;
-    VIDEOPlayer.src = `/${MEDIA_PATH.VIDEO}/${VIDEOList[count_video]}`;
+    VIDEOPlayer.src = `/${MEDIA_TYPE.VIDEO}/${VIDEOList[count_video]}`;
   }
 };
+
+let prevImageList = [...IMAGEList];
+let prevVideoList = [...VIDEOList];
+let prevCountImage = count_image;
+let prevCountVideo = count_video;
 
 function media_splice(Type) {
-  if (Type === "img") {
+  if (Type === "img" && IMAGEList.length > count_image) {
+    prevImageList = [...IMAGEList];
+    prevCountImage = count_image;
     IMAGEList.splice(count_image, 1);
-    changeMedia('L', MEDIA_PATH.IMAGE);
-  } else {
+    changeMedia('L', MEDIA_TYPE.IMAGE);
+  } else if (Type === "video" && VIDEOList.length > count_video) {
+    prevVideoList = [...VIDEOList];
+    prevCountVideo = count_video;
     VIDEOList.splice(count_video, 1);
-    changeMedia('L', MEDIA_PATH.VIDEO);
+    changeMedia('L', MEDIA_TYPE.VIDEO);
   }
-};
+}
 
+function undoMediaDeletion(Type) {
+  if (Type === "image") {
+    IMAGEList = [...prevImageList];
+    count_image = prevCountImage;
+    changeMedia('L', MEDIA_TYPE.IMAGE);
+  } else if (Type === "video") {
+    VIDEOList = [...prevVideoList];
+    count_video = prevCountVideo;
+    changeMedia('L', MEDIA_TYPE.VIDEO);
+  }
+}
+
+function choice() {
+  choice_list.push(IMAGEList[count_image]);
+}
+function choice_Save() {
+  IMAGEList = choice_list;
+}
 function handleImageInput(k) {
-  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_PATH.IMAGE);
+  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_TYPE.IMAGE);
 };
 
 function handleVideoInput(k) {
-  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_PATH.VIDEO);
-};
-
-function ejacu_count() {
-  ejaculation_count ++;
-  document.querySelector('.ejaculation-count').textContent = `${ejaculation_count}`;
-  ejaculation();
-};
-
-function ejaculation() {
-  let now = new Date();
-  let date_now = Date.now();
-  let date_now_str = `[${now.getHours()}時${now.getMinutes()}分${now.getSeconds()}秒]`;
-  let result = Math.ceil((date_now - start.time) / 1000);
-  let hours = Math.floor(result / 3600);
-  let minutes = Math.floor((result % 3600) / 60);
-  let seconds = result % 60;
-  let till_str = `${hours}時間${minutes}分${seconds}秒`;
-  const ejacu_str = `${date_now_str} [TILL ${till_str}]`;
-  document.querySelector(".ejaculation").textContent = ejacu_str;
-  document.querySelector('.nowtime').textContent = `${date}`;
-  start.time = date_now;
-  date = date_now_str;
+  changeMedia(k.key === 'ArrowRight' || k.key === 'w' ? 'R' : 'L', MEDIA_TYPE.VIDEO);
 };
 
 InputIMAGE.addEventListener('keydown', handleImageInput);
 InputVIDEO.addEventListener('keydown', handleVideoInput);
-
 VIDEOPlayer.addEventListener('ended', () => {
   count_video++;
   if (count_video >= VIDEOList.length) {
     count_video = 0;
   }
-  VIDEOPlayer.src = `/${MEDIA_PATH.VIDEO}/${VIDEOList[count_video]}`;
+  VIDEOPlayer.src = `/${MEDIA_TYPE.VIDEO}/${VIDEOList[count_video]}`;
 });
 
 function playVideo() {
@@ -199,7 +192,7 @@ function pauseVideo() {
 };
 
 function toggleOnlyMode(media) {
-  if (media === 'Image') {
+  if (media === 'image') {
     img.classList.toggle('only_mode');
     video.classList.toggle('display_none');
   } else {
@@ -230,14 +223,13 @@ function menu_toggle() {
   menu.classList.toggle("open");
 };
 function footer_remove() {
-  clock.classList.toggle("display_none");
   background.classList.toggle("remove");
   range.classList.toggle("display_none");
 };
 function keydown(event) {
-  if (event.key === exchange && permit) {
+  if (event.key === "A" && permit) {
     togglePictureInPicture();
-  } else if (event.key === nullify) {
+  } else if (event.key === "R") {
     permit = !permit;
   }
 }
