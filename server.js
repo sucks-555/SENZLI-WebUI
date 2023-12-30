@@ -12,7 +12,6 @@ const port = env.PORT || 3000;
 const exclusion = env.EXCLUSION || '@';
 const videoExtensions = ['.mp4', '.mov', '.MP4', '.MOV'];
 const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.PNG', '.JPG', '.JPEG', '.WEBP', '.GIF'];
-const AccessList = [],MismatchList = [],loginList = [];
 const localhost = '127.0.0.1';
 const IP = config.local ? localhost : env.IPv4 ?? localhost;
 const dir = config.samedirectory ? path.join(__dirname, '..', env.FOLDER) : path.join(env.FOLDER || __dirname);
@@ -45,24 +44,14 @@ app.use(['/path', `/${env.IMAGE}`, `/${env.VIDEO}`], (req, res, next) => {
   isAuthenticated && clientIP === authenticatedIP ? next() : res.status(401).send('Unauthorized');
 });
 
-function currentTime() {
-  const now = new Date();
-  const result = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-  return result
-}
-
 app.post('/password', (req, res) => {
   const { password } = req.body;
   if (password === correctPassword) {
     isAuthenticated = true;
     authenticatedIP = req.ip;
     res.status(200).send('OK');
-    console.log(`[${req.ip}] login - ${currentTime()}`);
-    loginList.push({"ip": req.ip,"time": currentTime()});
   } else {
     res.status(401).send('Unauthorized');
-    console.log(`[${req.ip}]がパスワードを間違えました - ${currentTime()}`)
-    MismatchList.push({"ip": req.ip,"time": currentTime()});
   }
 });
 
@@ -86,16 +75,7 @@ app.get(`/${env.VIDEO}`, async (_, res) => {
 });
 
 app.get('/stop', () => {
-  console.log(
-    'Access', JSON.stringify(AccessList),
-    'Password Mismatch', JSON.stringify(MismatchList),
-    'Login', JSON.stringify(loginList)
-  );
   process.exit();
-});
-app.get('/load', (req, _) => {
-  console.log(`Access [${req.ip}] - ${currentTime()}`);
-  AccessList.push({"ip": req.ip,"time": currentTime()});
 });
 
 app.listen(port, IP, () => {
