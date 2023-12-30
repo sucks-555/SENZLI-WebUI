@@ -12,14 +12,12 @@ const port = env.PORT || 3000;
 const exclusion = env.EXCLUSION || '@';
 const videoExtensions = ['.mp4', '.mov', '.MP4', '.MOV'];
 const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.PNG', '.JPG', '.JPEG', '.WEBP', '.GIF'];
-const AccessList = [];
-const MismatchList = [];
-const loginList = [];
-let isAuthenticated = false;
-let authenticatedIP = null;
+const AccessList = [],MismatchList = [],loginList = [];
 const localhost = '127.0.0.1';
 const IP = config.Access.local ? localhost : env.IPv4 ?? localhost;
 const dir = config.dirConditions.samedirectory ? path.join(__dirname, '..', env.FOLDER) : path.join(env.FOLDER || __dirname);
+let isAuthenticated = false;
+let authenticatedIP = null;
 
 async function getFilesAsync(folderPath, extensionFilter, resultArray, genre = '') {
   const files = await fs.promises.readdir(folderPath);
@@ -42,7 +40,6 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(`/${env.IMAGE}`, express.static(path.join(dir, env.IMAGE)));
 app.use(`/${env.VIDEO}`, express.static(path.join(dir, env.VIDEO)));
-
 app.use(['/path', `/${env.IMAGE}`, `/${env.VIDEO}`], (req, res, next) => {
   const clientIP = req.ip;
   isAuthenticated && clientIP === authenticatedIP ? next() : res.status(401).send('Unauthorized');
@@ -69,7 +66,7 @@ app.post('/password', (req, res) => {
   }
 });
 
-app.get('/path', async (req, res) => {
+app.get('/path', async (_, res) => {
   const pathJson = {
     'image': env.IMAGE || 'image',
     'video': env.VIDEO || 'video',
@@ -77,12 +74,12 @@ app.get('/path', async (req, res) => {
   res.json(pathJson);
 });
 
-app.get(`/${env.IMAGE}`, async (req, res) => {
+app.get(`/${env.IMAGE}`, async (_, res) => {
   const listImage = [];
   await getFilesAsync(path.join(dir, env.IMAGE), imageExtensions, listImage);
   res.json(listImage);
 });
-app.get(`/${env.VIDEO}`, async (req, res) => {
+app.get(`/${env.VIDEO}`, async (_, res) => {
   const listVideo = [];
   await getFilesAsync(path.join(dir, env.VIDEO), videoExtensions, listVideo);
   res.json(listVideo);
@@ -96,7 +93,7 @@ app.get('/stop', () => {
   );
   process.exit();
 });
-app.get('/load', (req, res) => {
+app.get('/load', (req, _) => {
   console.log(`Access [${req.ip}] - ${currentTime()}`);
   AccessList.push({"ip": req.ip,"time": currentTime()});
 });
