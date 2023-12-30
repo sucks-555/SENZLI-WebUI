@@ -79,5 +79,5 @@ app.get('/stop', () => {
 });
 
 app.listen(port, IP, () => {
-  console.log(`Server listening on port ${port}\nhttp://${IP}:${port}`);
+  console.log(`http://${IP}:${port}`);
 });
