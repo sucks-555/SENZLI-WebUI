@@ -21,7 +21,6 @@ const
   input = document.getElementById('range');
 
 window.onload = function () {
-  load();
   input.addEventListener('change', () => {
     speed(input.value);
   });
@@ -103,12 +102,6 @@ document.addEventListener("DOMContentLoaded", function () {
 function process_exit() {
   location.href = 'http://' + location.host;
   fetch('/stop', {
-    method: 'GET',
-  })
-};
-
-function load() {
-  fetch('/load', {
     method: 'GET',
   })
 };
