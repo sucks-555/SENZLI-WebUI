@@ -24,7 +24,7 @@ async function getFilesAsync(folderPath, extensionFilter, resultArray, genre = '
     const fullPath = path.join(folderPath, file);
     const stats = await fs.promises.stat(fullPath);
     if (stats.isDirectory()) {
-      if (file !== exclusion && !file.includes('#')) {
+      if (!file.includes(exclusion) && !file.includes('#')) {
         const subfolderGenre = genre ? path.join(genre, file) : file;
         await getFilesAsync(fullPath, extensionFilter, resultArray, subfolderGenre);
       }
