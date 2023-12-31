@@ -165,13 +165,6 @@ VIDEOPlayer.addEventListener('ended', () => {
   VIDEOPlayer.src = `/${MEDIA_TYPE.VIDEO}/${VIDEOList[count_video]}`;
 });
 
-function playVideo() {
-  VIDEOPlayer.paused && VIDEOPlayer.play();
-};
-function pauseVideo() {
-  !VIDEOPlayer.paused && VIDEOPlayer.pause();
-};
-
 function toggleOnlyMode(media) {
   media === 'image' ?
     img.classList.toggle('only_mode') +
@@ -181,7 +174,7 @@ function toggleOnlyMode(media) {
     img.classList.toggle('display_none')
 };
 function togglePlayPause() {
-  VIDEOPlayer.paused ? playVideo() : pauseVideo();
+  VIDEOPlayer.paused ? VIDEOPlayer.play() : VIDEOPlayer.pause();
 };
 function togglePictureInPicture() {
   document.pictureInPictureElement ? document.exitPictureInPicture() : VIDEOPlayer.requestPictureInPicture();
